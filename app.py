@@ -6,7 +6,7 @@ import pickle
 # LOAD MODEL
 # -----------------------------
 try:
-    with open("smart_model.pkl", "rb") as f:
+    with open("smart_manufacturing.pkl", "rb") as f:
         model, scaler, le, columns = pickle.load(f)
 except Exception as e:
     st.error(f"Model loading failed: {e}")

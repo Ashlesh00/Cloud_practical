@@ -8,7 +8,7 @@ import pickle
 # -----------------------------
 # LOAD MODEL
 # -----------------------------
-with open("model1.pkl", "rb") as f:
+with open("smart_manufacturing.pkl", "rb") as f:
     model, scaler, le, columns = pickle.load(f)
 
 # -----------------------------

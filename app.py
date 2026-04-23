@@ -1,25 +1,26 @@
 import streamlit as st
-import kagglehub
-from kagglehub import KaggleDatasetAdapter
 import pandas as pd
-import numpy as np
 import pickle
 
 # -----------------------------
 # LOAD MODEL
 # -----------------------------
-with open("smart_manufacturing.pkl", "rb") as f:
-    model, scaler, le, columns = pickle.load(f)
+try:
+    with open("smart_model.pkl", "rb") as f:
+        model, scaler, le, columns = pickle.load(f)
+except Exception as e:
+    st.error(f"Model loading failed: {e}")
+    st.stop()
 
 # -----------------------------
 # TITLE
 # -----------------------------
-st.title("🌱 Smart Agriculture Prediction App")
+st.title("🌾 Smart IoT Prediction App")
 
-st.write("Enter input values to predict output")
+st.write("Enter input values to get prediction")
 
 # -----------------------------
-# USER INPUT (AUTO FROM COLUMNS)
+# USER INPUT
 # -----------------------------
 user_input = []
 
@@ -32,31 +33,18 @@ for col in columns:
 # -----------------------------
 if st.button("Predict"):
     try:
-        input_data = pd.DataFrame([user_input], columns=columns)
+        input_df = pd.DataFrame([user_input], columns=columns)
 
-        # Scale input
-        input_scaled = scaler.transform(input_data)
+        # scale
+        input_scaled = scaler.transform(input_df)
 
-        # Predict
-        prediction = model.predict(input_scaled)
+        # predict
+        pred = model.predict(input_scaled)
 
-        # Decode label
-        result = le.inverse_transform(prediction)
+        # decode
+        result = le.inverse_transform(pred)
 
         st.success(f"Prediction: {result[0]}")
 
     except Exception as e:
-        st.error(f"Error: {e}")
-
-# -----------------------------
-# OPTIONAL: SHOW DATASET
-# -----------------------------
-st.subheader("Dataset Preview")
-
-if st.button("Show Dataset"):
-    df = kagglehub.load_dataset(
-        KaggleDatasetAdapter.PANDAS,
-        "wisam1985/advanced-iot-agriculture-2024",
-        "Advanced_IoT_Dataset.csv"
-    )
-    st.dataframe(df.head())
+        st.error(f"Prediction error: {e}")
